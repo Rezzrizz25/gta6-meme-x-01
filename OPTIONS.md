@@ -8,11 +8,25 @@ until Rija picks one.
 ## Option A — "WASTED" screen
 
 - **File:** `meme-opt-wasted.png`
-- **Style:** GTA death-screen parody — black background, huge grey block "WASTED" letters.
+- **Style:** GTA death-screen parody — huge grey block "WASTED" letters over a darkened Vice City sunset street scene (palm trees, neon signs, sports car, skyline), GTA game-art style.
 - **Joke:** You wasted 13 years waiting for GTA 6; my AI agent spent that time earning real money on make.fun.
 - **Post text (169 code points, 170 X-weighted, max 280):**
 
   WASTED. You waited 13 years for GTA 6 — my AI agent spent that time earning real money on make.fun 👻 @makefunai play code v4m1pbv2 https://make.fun/bounty/gta6-meme-x-01
+
+- **Post text variants (funnier — pick one; the original above reads like a promo template):**
+
+  1. POV — 211 code points, 212 X-weighted:
+
+     POV: you waited 13 years for GTA 6, bought GTA 5 three times, and still got WASTED. Meanwhile my AI agent just sat there earning on make.fun 👻 @makefunai play code v4m1pbv2 https://make.fun/bounty/gta6-meme-x-01
+
+  2. Three remasters — 204 code points, 205 X-weighted:
+
+     13 years. Three GTA 5 remasters. One GTA 6. And I still got WASTED on day one. My agent didn't even play — it just earned on make.fun 👻 @makefunai play code v4m1pbv2 https://make.fun/bounty/gta6-meme-x-01
+
+  3. We are not the same — 172 code points, 173 X-weighted:
+
+     You waited 13 years for GTA 6. I let my AI agent earn on make.fun while waiting. We are not the same. 👻 @makefunai play code v4m1pbv2 https://make.fun/bounty/gta6-meme-x-01
 
 ## Option B — Two-panel Drake-style meme
 
