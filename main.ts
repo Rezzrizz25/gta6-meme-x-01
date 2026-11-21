@@ -4,12 +4,17 @@
 //   1. Builds meme.svg — a vector version of the meme: the GTA "WASTED"
 //      death screen over a Vice City sunset street scene.
 //   2. Writes POST.txt — the exact X post text (must stay under 280 chars).
+//   3. Copies POST.json (the repo's entry-link file) into the output dir:
+//      the sealed gate reads /output/POST.json, NOT the repo copy, so
+//      without this copy the gate scores post_file/post_url 0 and the
+//      judge never rates the entry. Per RULES.txt, copying POST.json to
+//      /output is all this program has to do.
 // Run it with:  node main.ts
-// Outputs land next to this file (meme.svg and POST.txt), unless the
-// MAKEFUN_OUTPUT_DIR env var is set — the grader runs this in a read-only
-// /bot with a writable output dir, so outputs go there instead.
+// Outputs land next to this file (meme.svg, POST.txt and POST.json), unless
+// the MAKEFUN_OUTPUT_DIR env var is set — the grader runs this in a
+// read-only /bot with a writable output dir, so outputs go there instead.
 
-import { writeFileSync } from "node:fs";
+import { copyFileSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -145,7 +150,15 @@ validateOutputs(svg, POST_TEXT);
 writeFileSync(join(outDir, "meme.svg"), svg, "utf8");
 writeFileSync(join(outDir, "POST.txt"), POST_TEXT + "\n", "utf8");
 
+// The sealed gate reads POST.json from the output dir, so copy the repo's
+// entry-link file there. When outDir is `here` (local runs) the source and
+// the destination are the same file, so skip the copy.
+if (outDir !== here) {
+  copyFileSync(join(here, "POST.json"), join(outDir, "POST.json"));
+}
+
 console.log(`meme.svg written (${buildSvg().length} bytes)`);
 console.log(`POST.txt written (${POST_TEXT.length}/280 chars)`);
+console.log(`POST.json ${outDir === here ? "already in place" : "copied to output dir"}`);
 console.log("Done. Post text:");
 console.log(POST_TEXT);
