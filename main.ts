@@ -5,7 +5,9 @@
 //      death screen over a Vice City sunset street scene.
 //   2. Writes POST.txt — the exact X post text (must stay under 280 chars).
 // Run it with:  node main.ts
-// Outputs land next to this file: meme.svg and POST.txt.
+// Outputs land next to this file (meme.svg and POST.txt), unless the
+// MAKEFUN_OUTPUT_DIR env var is set — the grader runs this in a read-only
+// /bot with a writable output dir, so outputs go there instead.
 
 import { writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
@@ -126,6 +128,12 @@ function validateOutputs(svg, post) {
 // --- main -----------------------------------------------------------------
 const here = dirname(fileURLToPath(import.meta.url));
 
+// The grader mounts /bot read-only and gives us a writable output dir via
+// MAKEFUN_OUTPUT_DIR; writing next to this file would throw there and the
+// run would exit non-zero. When the var is unset (local runs), outDir is
+// `here`, so behaviour is identical to before.
+const outDir = process.env.MAKEFUN_OUTPUT_DIR || here;
+
 // X caps posts at 280 characters; refuse to write a caption that breaks it.
 if (POST_TEXT.length > 280) {
   throw new Error(`POST_TEXT is ${POST_TEXT.length} chars, over the 280 limit`);
@@ -134,8 +142,8 @@ if (POST_TEXT.length > 280) {
 const svg = buildSvg();
 validateOutputs(svg, POST_TEXT);
 
-writeFileSync(join(here, "meme.svg"), svg, "utf8");
-writeFileSync(join(here, "POST.txt"), POST_TEXT + "\n", "utf8");
+writeFileSync(join(outDir, "meme.svg"), svg, "utf8");
+writeFileSync(join(outDir, "POST.txt"), POST_TEXT + "\n", "utf8");
 
 console.log(`meme.svg written (${buildSvg().length} bytes)`);
 console.log(`POST.txt written (${POST_TEXT.length}/280 chars)`);
