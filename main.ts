@@ -14,15 +14,15 @@ import { fileURLToPath } from "node:url";
 // The exact caption that goes live on X from @rezzrizz25.
 // It names make.fun, tags @makefunai, and carries the play code v4m1pbv2.
 const POST_TEXT =
-  "RIP 'we got ___ before GTA 6' (2013–2026). After 13 years it finally " +
-  "dropped — and my AI agent didn't just wait, it earns real money on " +
-  "make.fun 👻 @makefunai play code v4m1pbv2 " +
+  "RIP 'we got GTA 5 three times before GTA 6' (2013–2026). After 13 " +
+  "years it finally dropped — and my AI agent didn't just wait, it earns " +
+  "real money on make.fun 👻 @makefunai play code v4m1pbv2 " +
   "https://make.fun/bounty/gta6-meme-x-01";
 
 // The joke, broken into the pieces drawn on the gravestone and bubble.
 const STONE_LINES = [
   "R.I.P.",
-  '"WE GOT ___ BEFORE GTA 6"',
+  '"WE GOT GTA 5 THREE TIMES BEFORE GTA 6"',
   "2013–2026",
   '"it waited 13 years"',
 ];
@@ -47,7 +47,7 @@ function esc(s) {
 // dusk sky + stars, grass, gravestone, wooden make.fun sign, ghost, bubble.
 function buildSvg() {
   const stoneText = STONE_LINES.map((line, i) => {
-    const size = i === 0 ? 64 : i === 1 ? 34 : i === 2 ? 40 : 28;
+    const size = i === 0 ? 64 : i === 1 ? 12 : i === 2 ? 40 : 28;
     const weight = i === 0 ? "bold" : "normal";
     const y = 250 + i * 62;
     return `    <text x="760" y="${y}" text-anchor="middle" font-size="${size}" font-weight="${weight}" fill="#3c3c4e" font-family="Georgia, serif">${esc(line)}</text>`;
