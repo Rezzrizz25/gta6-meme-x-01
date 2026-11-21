@@ -1,8 +1,8 @@
 // main.ts — gta6-meme-x-01 entry generator (make.fun bounty)
 // Node 22+, standard library ONLY: no network, no installs, no deps.
 // What it does:
-//   1. Builds meme.svg — a vector version of the meme: the make.fun ghost
-//      mourning the dead "We got ___ before GTA 6" meme at its gravestone.
+//   1. Builds meme.svg — a vector version of the meme: the GTA "WASTED"
+//      death screen over a Vice City sunset street scene.
 //   2. Writes POST.txt — the exact X post text (must stay under 280 chars).
 // Run it with:  node main.ts
 // Outputs land next to this file: meme.svg and POST.txt.
@@ -14,22 +14,18 @@ import { fileURLToPath } from "node:url";
 // The exact caption that goes live on X from @rezzrizz25.
 // It names make.fun, tags @makefunai, and carries the play code v4m1pbv2.
 const POST_TEXT =
-  "RIP 'we got GTA 5 three times before GTA 6' (2013–2026). After 13 " +
-  "years it finally dropped — and my AI agent didn't just wait, it earns " +
-  "real money on make.fun 👻 @makefunai play code v4m1pbv2 " +
+  "POV: you waited 13 years for GTA 6, bought GTA 5 three times, and " +
+  "still got WASTED. Meanwhile my AI agent just sat there earning on " +
+  "make.fun 👻 @makefunai play code v4m1pbv2 " +
   "https://make.fun/bounty/gta6-meme-x-01";
 
-// The joke, broken into the pieces drawn on the gravestone and bubble.
-const STONE_LINES = [
-  "R.I.P.",
-  '"WE GOT GTA 5 THREE TIMES BEFORE GTA 6"',
-  "2013–2026",
-  '"it waited 13 years"',
+// The joke, as drawn on the WASTED screen.
+const HEADLINE = "WASTED";
+const SUBTITLE_LINES = [
+  "You waited 13 years for GTA 6.",
+  "My AI agent spent that time earning real money on make.fun.",
 ];
-const BUBBLE_LINES = [
-  "my agent didn't wait —",
-  "it earned on make.fun",
-];
+const WORDMARK = "make.fun";
 
 const W = 1200; // canvas width  (matches the 16:9 meme.png layout)
 const H = 675; // canvas height
@@ -44,65 +40,61 @@ function esc(s) {
 }
 
 // Build the SVG scene piece by piece so each part is easy to tweak:
-// dusk sky + stars, grass, gravestone, wooden make.fun sign, ghost, bubble.
+// Vice City sunset sky + skyline, palm trees, neon signs, street, car,
+// then a dark overlay so the WASTED text pops like the in-game screen.
 function buildSvg() {
-  const stoneText = STONE_LINES.map((line, i) => {
-    const size = i === 0 ? 64 : i === 1 ? 12 : i === 2 ? 40 : 28;
-    const weight = i === 0 ? "bold" : "normal";
-    const y = 250 + i * 62;
-    return `    <text x="760" y="${y}" text-anchor="middle" font-size="${size}" font-weight="${weight}" fill="#3c3c4e" font-family="Georgia, serif">${esc(line)}</text>`;
+  const subtitleText = SUBTITLE_LINES.map((line, i) => {
+    return `    <text x="600" y="${468 + i * 44}" text-anchor="middle" font-size="30" fill="#ffffff" font-family="Arial, sans-serif">${esc(line)}</text>`;
   }).join("\n");
 
-  const bubbleText = BUBBLE_LINES.map((line, i) => {
-    return `    <text x="330" y="${118 + i * 40}" text-anchor="middle" font-size="30" fill="#22222e" font-family="Arial, sans-serif">${esc(line)}</text>`;
-  }).join("\n");
-
-  // Stars: fixed positions so the sky looks the same on every run.
-  const stars = [
-    [60, 60], [180, 40], [420, 70], [560, 45], [900, 55],
-    [1050, 90], [1120, 160], [80, 180], [980, 200], [700, 80],
+  // Lit windows: fixed positions so the skyline looks the same every run.
+  const windows = [
+    [700, 180], [716, 210], [748, 190], [780, 230], [830, 200],
+    [880, 170], [900, 215], [960, 185], [1010, 225], [1060, 195],
   ]
-    .map(([x, y]) => `    <circle cx="${x}" cy="${y}" r="4" fill="#fff7c0" />`)
+    .map(([x, y]) => `    <rect x="${x}" y="${y}" width="10" height="14" fill="#ffd76a" opacity="0.85" />`)
     .join("\n");
 
   return `<?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">
-  <title>make.fun ghost mourns the "We got ___ before GTA 6" meme (2013-2026)</title>
-  <desc>Original cartoon: a cute white ghost holds flowers at a gravestone for the dead GTA 6 waiting meme, while a make.fun sign stands beside it.</desc>
-  <!-- dusk sky -->
-  <rect width="${W}" height="${H}" fill="#7b6fae" />
-  <rect y="380" width="${W}" height="${H - 380}" fill="#5d7d5a" />
-${stars}
-  <!-- grass tufts -->
-  <path d="M40 640 l10 -26 l10 26 M180 655 l10 -26 l10 26 M1080 640 l10 -26 l10 26" stroke="#3e5c3a" stroke-width="5" fill="none" stroke-linecap="round" />
-  <!-- gravestone -->
-  <path d="M600 200 Q760 130 920 200 L920 560 L600 560 Z" fill="#9a9aa8" stroke="#3c3c4e" stroke-width="6" />
-  <rect x="580" y="560" width="360" height="40" fill="#7d7d8c" stroke="#3c3c4e" stroke-width="6" />
-${stoneText}
-  <!-- wooden make.fun sign -->
-  <rect x="930" y="430" width="220" height="80" rx="8" fill="#c89b62" stroke="#5a3d1e" stroke-width="5" />
-  <rect x="1025" y="510" width="18" height="90" fill="#8a6a3f" stroke="#5a3d1e" stroke-width="4" />
-  <text x="1040" y="483" text-anchor="middle" font-size="34" font-weight="bold" fill="#3a2410" font-family="Arial, sans-serif">make.fun</text>
-  <!-- speech bubble -->
-  <rect x="90" y="60" width="480" height="150" rx="30" fill="#ffffff" stroke="#22222e" stroke-width="5" />
-  <path d="M300 210 L340 260 L380 210 Z" fill="#ffffff" stroke="#22222e" stroke-width="5" />
-${bubbleText}
-  <!-- the make.fun ghost, holding flowers -->
-  <path d="M180 330 Q180 210 300 210 Q420 210 420 330 L420 520 Q390 490 360 520 Q330 490 300 520 Q270 490 240 520 Q210 490 180 520 Z" fill="#ffffff" stroke="#22222e" stroke-width="6" />
-  <circle cx="255" cy="330" r="22" fill="#22222e" />
-  <circle cx="345" cy="330" r="22" fill="#22222e" />
-  <circle cx="263" cy="322" r="7" fill="#ffffff" />
-  <circle cx="353" cy="322" r="7" fill="#ffffff" />
-  <path d="M285 385 Q300 375 315 385" stroke="#22222e" stroke-width="5" fill="none" stroke-linecap="round" />
-  <circle cx="240" cy="372" r="12" fill="#f4a7b9" opacity="0.7" />
-  <circle cx="360" cy="372" r="12" fill="#f4a7b9" opacity="0.7" />
-  <!-- flower bouquet in the ghost's hands -->
-  <circle cx="300" cy="470" r="16" fill="#f28bb1" stroke="#22222e" stroke-width="4" />
-  <circle cx="272" cy="488" r="14" fill="#b388eb" stroke="#22222e" stroke-width="4" />
-  <circle cx="328" cy="488" r="14" fill="#f28bb1" stroke="#22222e" stroke-width="4" />
-  <path d="M300 486 L300 530 M280 500 L300 530 M320 500 L300 530" stroke="#3e7d3a" stroke-width="5" fill="none" stroke-linecap="round" />
+  <title>GTA WASTED screen: you waited 13 years for GTA 6, the agent earned on make.fun</title>
+  <desc>Original cartoon: a GTA-style WASTED death screen over a Vice City sunset street — palm trees, neon signs, a sports car — with the joke that the AI agent spent the 13-year wait earning real money on make.fun.</desc>
+  <defs>
+    <linearGradient id="sunset" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#2a1a3a" />
+      <stop offset="0.45" stop-color="#7a2d4d" />
+      <stop offset="0.75" stop-color="#e8703a" />
+      <stop offset="1" stop-color="#ffb347" />
+    </linearGradient>
+  </defs>
+  <!-- sunset sky -->
+  <rect width="${W}" height="${H}" fill="url(#sunset)" />
+  <circle cx="600" cy="430" r="70" fill="#ffb347" opacity="0.9" />
+  <!-- skyline -->
+  <path d="M660 470 L660 160 L700 160 L700 210 L730 210 L730 140 L790 140 L790 470 M820 470 L820 180 L860 180 L860 230 L890 230 L890 150 L940 150 L940 470 M970 470 L970 200 L1010 200 L1010 160 L1050 160 L1050 470" fill="#1a1226" />
+${windows}
+  <!-- street -->
+  <rect y="470" width="${W}" height="${H - 470}" fill="#14101c" />
+  <path d="M0 560 L1200 560" stroke="#ff9d5c" stroke-width="4" stroke-dasharray="40 30" opacity="0.6" />
+  <!-- palm trees (silhouettes) -->
+  <path d="M90 470 Q80 340 95 250 M95 250 Q60 220 30 235 M95 250 Q95 205 70 185 M95 250 Q120 210 150 215 M95 250 Q140 235 165 255" stroke="#120a1e" stroke-width="10" fill="none" stroke-linecap="round" />
+  <path d="M1120 470 Q1130 350 1115 270 M1115 270 Q1080 240 1050 255 M1115 270 Q1115 225 1090 205 M1115 270 Q1140 230 1170 235" stroke="#120a1e" stroke-width="10" fill="none" stroke-linecap="round" />
+  <!-- neon signs -->
+  <rect x="150" y="380" width="190" height="44" rx="8" fill="#2a0a1e" stroke="#ff5da2" stroke-width="3" />
+  <text x="245" y="411" text-anchor="middle" font-size="22" font-weight="bold" fill="#ff5da2" font-family="Arial, sans-serif">OCEAN DRIVE</text>
+  <rect x="880" y="390" width="170" height="44" rx="8" fill="#0a1e2a" stroke="#4dd8ff" stroke-width="3" />
+  <text x="965" y="421" text-anchor="middle" font-size="22" font-weight="bold" fill="#4dd8ff" font-family="Arial, sans-serif">LIQUOR 24/7</text>
+  <!-- sports car silhouette -->
+  <path d="M180 620 Q200 580 260 575 L330 575 Q400 575 430 600 L470 600 Q500 600 505 620 L505 635 L180 635 Z" fill="#0d0a14" />
+  <circle cx="250" cy="632" r="20" fill="#000000" stroke="#333" stroke-width="4" />
+  <circle cx="440" cy="632" r="20" fill="#000000" stroke="#333" stroke-width="4" />
+  <!-- dark overlay so the headline pops, like the in-game WASTED screen -->
+  <rect width="${W}" height="${H}" fill="#000000" opacity="0.35" />
+  <!-- headline -->
+  <text x="600" y="400" text-anchor="middle" font-size="210" font-weight="bold" letter-spacing="8" fill="#a8a8a8" font-family="Arial, sans-serif">${HEADLINE}</text>
+${subtitleText}
   <!-- caption strip, so the SVG carries the branding even on its own -->
-  <text x="600" y="650" text-anchor="middle" font-size="26" font-weight="bold" fill="#ffffff" font-family="Arial, sans-serif">make.fun — where agents earn, not wait 👻</text>
+  <text x="600" y="650" text-anchor="middle" font-size="26" font-weight="bold" fill="#ffffff" font-family="Arial, sans-serif">${WORDMARK}</text>
 </svg>
 `;
 }
@@ -111,7 +103,7 @@ ${bubbleText}
 // The judge scores "make.fun in picture" and the caption rules, so check
 // the outputs carry the required branding before writing anything to disk.
 function validateOutputs(svg, post) {
-  const requiredInSvg = ["make.fun", "GTA 6", "2013–2026", "R.I.P."];
+  const requiredInSvg = ["make.fun", "GTA 6", "WASTED", "13 years"];
   for (const needle of requiredInSvg) {
     if (!svg.includes(needle)) {
       throw new Error(`meme.svg is missing required text: ${needle}`);
@@ -123,10 +115,10 @@ function validateOutputs(svg, post) {
       throw new Error(`POST_TEXT is missing required token: ${needle}`);
     }
   }
-  // The gravestone joke must survive intact — every stone line in the SVG.
-  for (const line of STONE_LINES) {
+  // The joke must survive intact — every subtitle line in the SVG.
+  for (const line of SUBTITLE_LINES) {
     if (!svg.includes(esc(line))) {
-      throw new Error(`meme.svg is missing gravestone line: ${line}`);
+      throw new Error(`meme.svg is missing subtitle line: ${line}`);
     }
   }
 }
